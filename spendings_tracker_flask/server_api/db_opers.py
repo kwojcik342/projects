@@ -103,13 +103,20 @@ def delete_incomes(in_inc_list):
 def get_user_incomes(in_id_user):
     q_sel_inc = "select id_income, income_amount, income_timestamp, income_user_note from user_incomes where id_user = %s order by income_timestamp asc;"
     incomes_list = []
+    l_resp = []
     db_con = None
     try:
         db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
         db_cur = db_con.cursor()
-        db_cur.execute(q_sel_inc, in_id_user)
+        db_cur.execute(q_sel_inc, (in_id_user,))
         incomes_list = db_cur.fetchall()
-        # db_con.commit()
+
+        l_inc_js_tags = ["id_income", "inc_amount", "inc_tmst", "inc_note"]
+        for inc in incomes_list:
+            l_tmp = [inc[0], float(inc[1]), inc[2].strftime("%Y-%m-%d %H:%M:%S"), inc[3]]
+            d_tmp = dict(zip(l_inc_js_tags, l_tmp))
+            l_resp.append(d_tmp)
+
         print("Selected " + str(db_cur.rowcount) + " incomes where id_user= " + str(in_id_user))
         db_cur.close()
     except psycopg2.DatabaseError as err:
@@ -117,7 +124,7 @@ def get_user_incomes(in_id_user):
     finally:
         if db_con is not None:
             db_con.close()
-        return incomes_list
+        return l_resp
 
 
 def insert_spending(in_id_user, in_sp_amount, in_sp_tmstmp, in_sp_note):
@@ -183,13 +190,20 @@ def delete_spendings(in_sp_list):
 def get_user_spendings(in_id_user):
     q_sel_sp = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s order by spending_timestamp asc;"
     spendings_list = []
+    l_resp = []
     db_con = None
     try:
         db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
         db_cur = db_con.cursor()
-        db_cur.execute(q_sel_sp, in_id_user)
+        db_cur.execute(q_sel_sp, (in_id_user, ))
         spendings_list = db_cur.fetchall()
-        # db_con.commit()
+
+        l_sp_js_tags = ["id_spending", "sp_amount", "sp_tmst", "sp_note"]
+        for sp in spendings_list:
+            l_tmp = [sp[0], float(sp[1]), sp[2].strftime("%Y-%m-%d %H:%M:%S"), sp[3]]
+            d_tmp = dict(zip(l_sp_js_tags, l_tmp))
+            l_resp.append(d_tmp)
+
         print("Selected " + str(db_cur.rowcount) + " spendings where id_user= " + str(in_id_user))
         db_cur.close()
     except psycopg2.DatabaseError as err:
@@ -197,4 +211,4 @@ def get_user_spendings(in_id_user):
     finally:
         if db_con is not None:
             db_con.close()
-        return spendings_list
+        return l_resp
