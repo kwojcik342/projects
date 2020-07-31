@@ -32,7 +32,7 @@ def get_user_id(username):
 # INCOMES HANDLING
 
 
-@app.route("/spendingstracker/api/incomes/addincome", methods=["POST"])
+@app.route("/spendingstracker/api/incomes", methods=["POST"])
 def add_income():
     if not flask.request.json or "id_user" not in flask.request.json or "inc_amount" not in flask.request.json or "inc_tmst" not in flask.request.json:
         flask.abort(400)
@@ -43,7 +43,7 @@ def add_income():
     return flask.jsonify({"id_ncome": id_income})
 
 
-@app.route("/spendingstracker/api/incomes/updateincome", methods=["PUT"])
+@app.route("/spendingstracker/api/incomes", methods=["PUT"])
 def upd_income():
     if not flask.request.json or "id_income" not in flask.request.json or "inc_amount" not in flask.request.json or "inc_tmst" not in flask.request.json:
         flask.abort(400)
@@ -54,7 +54,7 @@ def upd_income():
     return flask.jsonify({"id_ncome": id_income})
 
 
-@app.route("/spendingstracker/api/incomes/getincomes", methods=["GET"])
+@app.route("/spendingstracker/api/incomes", methods=["GET"])
 def get_user_incomes():
     if not flask.request.json or "id_user" not in flask.request.json:
         flask.abort(400)
@@ -64,7 +64,7 @@ def get_user_incomes():
 # SPENDINGS HANDLING
 
 
-@app.route("/spendingstracker/api/spendings/addspending", methods=["POST"])
+@app.route("/spendingstracker/api/spendings", methods=["POST"])
 def add_spending():
     if not flask.request.json or "id_user" not in flask.request.json or "sp_amount" not in flask.request.json or "sp_tmst" not in flask.request.json:
         flask.abort(400)
@@ -75,7 +75,7 @@ def add_spending():
     return flask.jsonify({"id_spending": id_spending})
 
 
-@app.route("/spendingstracker/api/spendings/updatespending", methods=["PUT"])
+@app.route("/spendingstracker/api/spendings", methods=["PUT"])
 def upd_spending():
     if not flask.request.json or "id_spending" not in flask.request.json or "sp_amount" not in flask.request.json or "sp_tmst" not in flask.request.json:
         flask.abort(400)
@@ -86,7 +86,7 @@ def upd_spending():
     return flask.jsonify({"id_spending": id_spending})
 
 
-@app.route("/spendingstracker/api/spendings/getspendings", methods=["GET"])
+@app.route("/spendingstracker/api/spendings", methods=["GET"])
 def get_user_spendings():
     if not flask.request.json or "id_user" not in flask.request.json:
         flask.abort(400)
