@@ -84,10 +84,13 @@ def delete_incomes(in_inc_list):
     q_delete_inc = "delete from user_incomes where id_income =%s;"
     id_income = -1
     db_con = None
+    inc_list = []
+    for inc in in_inc_list:
+        inc_list.append(tuple((inc, )))
     try:
         db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
         db_cur = db_con.cursor()
-        db_cur.executemany(q_delete_inc, in_inc_list)
+        db_cur.executemany(q_delete_inc, inc_list)
         id_income = 1
         db_con.commit()
         print("Deleted incomes with id= " + str(in_inc_list))
@@ -171,10 +174,13 @@ def delete_spendings(in_sp_list):
     q_delete_sp = "delete from user_spendings where id_spending =%s;"
     id_spending = -1
     db_con = None
+    sp_list = []
+    for sp in in_sp_list:
+        sp_list.append(tuple((sp, )))
     try:
         db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
         db_cur = db_con.cursor()
-        db_cur.executemany(q_delete_sp, in_sp_list)
+        db_cur.executemany(q_delete_sp, sp_list)
         id_spending = 1
         db_con.commit()
         print("Deleted spendings with id= " + str(in_sp_list))
@@ -187,15 +193,28 @@ def delete_spendings(in_sp_list):
         return id_spending
 
 
-def get_user_spendings(in_id_user):
+def get_user_spendings(in_id_user, in_start_date, in_end_date):
     q_sel_sp = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s order by spending_timestamp asc;"
+    q_sel_sp_sd = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s order by spending_timestamp asc;"
+    q_sel_sp_ed = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp <= %s order by spending_timestamp asc;"
+    q_sel_sp_md = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s and spending_timestamp <= %s order by spending_timestamp asc;"
+
     spendings_list = []
     l_resp = []
     db_con = None
     try:
         db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
         db_cur = db_con.cursor()
-        db_cur.execute(q_sel_sp, (in_id_user, ))
+
+        if in_start_date != "" and in_end_date != "":
+            db_cur.execute(q_sel_sp_md, (in_id_user, in_start_date, in_end_date,))
+        elif in_start_date != "" and in_end_date == "":
+            db_cur.execute(q_sel_sp_sd, (in_id_user, in_start_date,))
+        elif in_start_date == "" and in_end_date != "":
+            db_cur.execute(q_sel_sp_ed, (in_id_user, in_end_date,))
+        else:
+            db_cur.execute(q_sel_sp, (in_id_user,))
+
         spendings_list = db_cur.fetchall()
 
         l_sp_js_tags = ["id_spending", "sp_amount", "sp_tmst", "sp_note"]
@@ -204,7 +223,7 @@ def get_user_spendings(in_id_user):
             d_tmp = dict(zip(l_sp_js_tags, l_tmp))
             l_resp.append(d_tmp)
 
-        print("Selected " + str(db_cur.rowcount) + " spendings where id_user= " + str(in_id_user))
+        print("Selected " + str(db_cur.rowcount) + " spendings where id_user= " + str(in_id_user) + " between dates: " + str(in_start_date) + " and " + str(in_end_date))
         db_cur.close()
     except psycopg2.DatabaseError as err:
         print(err)

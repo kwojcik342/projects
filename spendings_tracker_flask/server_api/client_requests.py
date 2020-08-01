@@ -41,10 +41,20 @@ def req_put_income(in_id_income, in_inc_amount, in_inc_tmst, in_inc_note):
     print(resp.status_code)
     print(resp.json())
 
+
 def req_get_user_incomes(in_id_user):
     url = st_api_url + inc_url
     js = {"id_user": in_id_user}
     resp = requests.get(url, json=js)
+
+    print(resp.status_code)
+    print(resp.json())
+
+
+def req_del_incomes(in_inc_list):
+    url = st_api_url + inc_url
+    js = {"incomes": in_inc_list}
+    resp = requests.delete(url, json=js)
 
     print(resp.status_code)
     print(resp.json())
@@ -76,10 +86,21 @@ def req_put_spending(in_id_spending, in_sp_amount, in_sp_tmst, in_sp_note):
     print(resp.json())
 
 
-def req_get_user_spendings(in_id_user):
+def req_get_user_spendings(in_id_user, in_start_date="", in_end_date=""):
     url = st_api_url + sp_url
-    js = {"id_user": in_id_user}
+    js = {"id_user": in_id_user,
+        "start_date": in_start_date,
+        "end_date": in_end_date}
     resp = requests.get(url, json=js)
+
+    print(resp.status_code)
+    print(resp.json())
+
+
+def req_del_spendings(in_sp_list):
+    url = st_api_url + sp_url
+    js = {"spendings": in_sp_list}
+    resp = requests.delete(url, json=js)
 
     print(resp.status_code)
     print(resp.json())
@@ -95,4 +116,7 @@ if __name__ == "__main__":
 
     # req_post_spending(3, 111.34, "2020-08-01 09:10:30", "zakupy")
     # req_put_spending(13, 112.12, "2020-08-01 09:10:30", "zakupy")
-    # req_get_user_spendings(3)
+    req_get_user_spendings(3)
+
+    # inc_list = [10, 11]
+    # req_del_spendings(inc_list)
