@@ -1,3 +1,5 @@
-db_opers - functions that perform operations on postgre db using psycopg2 python module
-flask_test.py - rest api server that handles http requests
+Application that allows users to keep track of their incomes and spending\
+\
+db_opers - functions that perform operations on postgre db using psycopg2 python module\
+flask_rest_api_server.py - rest api server that handles http requests\
 client_requests.py - client functions sending http request to api server
