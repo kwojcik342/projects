@@ -104,7 +104,7 @@ def delete_incomes(in_inc_list):
 
 
 def get_user_incomes(in_id_user):
-    q_sel_inc = "select id_income, income_amount, income_timestamp, income_user_note from user_incomes where id_user = %s order by income_timestamp asc;"
+    q_sel_inc = "select id_income, income_amount, income_timestamp, income_user_note from user_incomes where id_user = %s order by income_timestamp desc;"
     incomes_list = []
     l_resp = []
     db_con = None
