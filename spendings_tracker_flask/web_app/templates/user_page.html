@@ -1,61 +1,80 @@
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
     <title>User Page</title>
     <body>
-        <div class="d-flex h-100">
-            <div class="p-3 mb-2 bg-dark text-white" id=sidebar>
-                <h2>Menu</h2>
-                <ul>
-                    <li>Add income</li>
-                    <li>Add spending</li>
-                    <li>Logout</li>
-                </ul>
-            </div>
-            <div id="page-content" class="h-100">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col">
-                            <div class="jumbotron">
-                                <h1 class="display-4">Incomes</h1>
-                                <p class="lead">This table shows you incomes</p>
-                                <hr class="my-4">
-                                <table class="table table-hover">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Amount</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Note</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for dic in j_incomes %}
-                                            <tr>
-                                                <th scope="row">{{loop.index}}</th>
-                                                {% for i in dic %}
-                                                    <td>{{dic[i]}}</td>
-                                                {% endfor %}
-                                            </tr>
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Home</a>
+            <a class="navbar-brand" href="/logout">Logout</a>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="jumbotron">
+                        <h1 class="display-4">Incomes</h1>
+                        <p class="lead">This table shows you incomes</p>
+                        <hr class="my-4">
+                        <div class="pos-f-t">
+                            <div class="collapse" id="navbarToggleAddIncome">
+                                <div class="bg-dark p-4">
+                                    <h5 class="text-white h4">New income Data</h5>
+                                    <form>
+                                        <div class="form-row">
+                                            <input type="text" class="form-control" placeholder="Income Amount">
+                                        </div>
+                                        <div class="form-row">
+                                            <input type="datetime-local">
+                                        </div>
+                                        <div class="form-row">
+                                            <input type="text" class="form-control" placeholder="Notes">
+                                        </div>
+                                        <div class="form-row">
+                                            <button type="submit" class="btn btn-secondary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <nav class="navbar navbar-dark bg-dark">
+                              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleAddIncome" aria-controls="navbarToggleAddIncome" aria-expanded="false" aria-label="Toggle navigation">
+                                <p style="color:white;">Add Income</p>
+                              </button>
+                            </nav>
+                        </div>
+                        <hr class="my-4">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dic in j_incomes %}
+                                    <tr>
+                                        <th scope="row">{{loop.index}}</th>
+                                        {% for i in dic %}
+                                            <td>{{dic[i]}}</td>
                                         {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="jumbotron">
-                                <h1 class="display-4">Incomes Chart</h1>
-                                <p class="lead">Chart showing your incomes</p>
-                                <hr class="my-4">
-                                <embed type="image/svg+xml" src= {{ chart|safe }} />
-                            </div>
-                        </div>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="row"></div>
+                </div>
+                <div class="col">
+                    <div class="jumbotron">
+                        <h1 class="display-4">Incomes Chart</h1>
+                        <p class="lead">Chart showing your incomes</p>
+                        <hr class="my-4">
+                        <embed type="image/svg+xml" src= {{ chart|safe }} />
+                    </div>
                 </div>
             </div>
+            <div class="row"></div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
