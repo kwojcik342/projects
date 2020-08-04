@@ -41,7 +41,7 @@ def user_page():
                 l_id_inc_del.append(int(request.values["id_inc_del"]))
                 res = dbo.delete_incomes(l_id_inc_del)
                 if res < 0:
-                    pass
+                    pass            
 
         usr_inc = dbo.get_user_incomes(id_user)
 
@@ -76,6 +76,20 @@ def user_page():
         monthly_chart.add("income", l_inc)
         monthly_chart.add("spendings", l_sp_sum)
         chart_m_data = monthly_chart.render_data_uri()
+
+        if request.method == "POST" and "spCheckbox" in request.form:
+            boxSelected = request.form.getlist("spCheckbox")
+            if len(boxSelected) == 1:
+                l_usr_spendings = dbo.get_user_spendings(id_user, boxSelected[0], "")
+            elif len(boxSelected) > 1:
+                boxSelected.sort()
+                l_usr_spendings = dbo.get_user_spendings(id_user, boxSelected[0], boxSelected[-1])
+            print(l_usr_spendings)
+        elif request.method == "GET" or (request.method == "POST" and "spCheckbox" not in request.form):
+            default_sp_st_date = usr_inc[0]["inc_tmst"]
+            l_usr_spendings = dbo.get_user_spendings(id_user, default_sp_st_date, "")
+            print(l_usr_spendings)
+
 
         return render_template("user_page.html"
                                 , chart=chart_m_data

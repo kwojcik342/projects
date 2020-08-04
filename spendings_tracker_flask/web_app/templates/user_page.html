@@ -42,35 +42,42 @@
                             </nav>
                         </div>
                         <hr class="my-4">
-                        <table class="table table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Note</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for dic in j_incomes %}
+                        <form action="#" method="POST">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
                                     <tr>
-                                        <th scope="row">{{loop.index}}</th>
-                                        {% for i in dic %}
-                                            {% if loop.index == 1 %}
-                                                <td>
-                                                    <form action="#" method="POST">
-                                                        <button button type="submit" class="btn btn-secondary" name = "id_inc_del" value= {{ dic[i] }}>Delete</button>
-                                                    </form>
-                                                </td>
-                                            {% else %}
-                                                <td>{{dic[i]}}</td>
-                                            {% endif%}
-                                        {% endfor %}
+                                        <th scope="col">#</th>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Note</th>
+                                        <th scope="col">Show Spendings</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {% for dic in j_incomes %}
+                                        <tr>
+                                            <th scope="row">{{loop.index}}</th>
+                                            {% for i in dic %}
+                                                {% if loop.index == 1 %}
+                                                    <td>
+                                                        <form action="#" method="POST">
+                                                            <button button type="submit" class="btn btn-secondary" name = "id_inc_del" value= {{ dic[i] }}>Delete</button>
+                                                        </form>
+                                                    </td>
+                                                {% else %}
+                                                    <td>{{dic[i]}}</td>
+                                                {% endif%}
+                                            {% endfor %}
+                                            <td>
+                                                <input class="form-check-input position-static" type="checkbox" name="spCheckbox" aria-label="..." value= {{ dic.inc_tmst }}>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-secondary btn-lg btn-block">Show spendings for selected incomes</button>
+                        </form>
                     </div>
                 </div>
                 <div class="col">
