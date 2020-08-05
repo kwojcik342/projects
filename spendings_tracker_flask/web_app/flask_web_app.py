@@ -13,7 +13,9 @@ def home():
     if request.method == "POST":
         usern = request.values["inputLogin"]
         id_usr = dbo.get_user_id(usern)
-        session["id_user"] = id_usr
+        if id_usr > 0:
+            session["id_user"] = id_usr
+        
         if id_usr < 0:
             return redirect(url_for("home"))
         else:
@@ -103,7 +105,9 @@ def user_page():
                 for inc in usr_inc:
                     if inc["id_income"] == int(boxSelected[0]):
                         sp_st_date = inc["inc_tmst"]
+                        session["sp_st_date"] = sp_st_date
                         sp_end_date = ""
+                        session["sp_end_date"] = sp_end_date
                         break
             elif len(boxSelected) > 1:
                 l_sel_inc_dates = []
@@ -113,10 +117,19 @@ def user_page():
                             l_sel_inc_dates.append(datetime.strptime(inc["inc_tmst"], "%Y-%m-%d %H:%M:%S"))
                 l_sel_inc_dates.sort()
                 sp_st_date = str(l_sel_inc_dates[0])
+                session["sp_st_date"] = sp_st_date
                 sp_end_date = str(l_sel_inc_dates[-1])
+                session["sp_end_date"] = sp_end_date
         elif request.method == "GET" or (request.method == "POST" and "spCheckbox" not in request.form):
-            sp_st_date = usr_inc[0]["inc_tmst"]
-            sp_end_date = ""
+            if "sp_st_date" in session:
+                sp_st_date = session["sp_st_date"]
+            else:
+                sp_st_date = usr_inc[0]["inc_tmst"]
+
+            if "sp_end_date" in session:
+                sp_end_date = session["sp_end_date"]
+            else:
+                sp_end_date = ""
 
         l_usr_spendings = dbo.get_user_spendings(id_user, sp_st_date, sp_end_date)
 
