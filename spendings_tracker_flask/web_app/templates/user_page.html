@@ -13,7 +13,7 @@
                 <div class="col">
                     <div class="jumbotron">
                         <h1 class="display-4">Incomes</h1>
-                        <p class="lead">This table shows you incomes</p>
+                        <p class="lead">This table shows your incomes</p>
                         <hr class="my-4">
                         <div class="pos-f-t">
                             <div class="collapse" id="navbarToggleAddIncome">
@@ -62,7 +62,7 @@
                                                 {% if loop.index == 1 %}
                                                     <td>
                                                         <form action="#" method="POST">
-                                                            <button button type="submit" class="btn btn-secondary" name = "id_inc_del" value= {{ dic[i] }}>Delete</button>
+                                                            <button button type="submit" class="btn btn-secondary" name = "fin_id_inc_del" value= {{ dic[i] }}>Delete</button>
                                                         </form>
                                                     </td>
                                                 {% else %}
@@ -70,7 +70,7 @@
                                                 {% endif%}
                                             {% endfor %}
                                             <td>
-                                                <input class="form-check-input position-static" type="checkbox" name="spCheckbox" aria-label="..." value= {{ dic.inc_tmst }}>
+                                                <input class="form-check-input position-static" type="checkbox" name="spCheckbox" aria-label="..." value= {{ dic.id_income }}>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -85,11 +85,83 @@
                         <h1 class="display-4">Incomes Chart</h1>
                         <p class="lead">Chart showing your incomes</p>
                         <hr class="my-4">
-                        <embed type="image/svg+xml" src= {{ chart|safe }} />
+                        <embed type="image/svg+xml" src= {{ chartinc|safe }} />
                     </div>
                 </div>
             </div>
-            <div class="row"></div>
+            <div class="row">
+                <div class="col">
+                    <div class="jumbotron">
+                        <h1 class="display-4">Spendings</h1>
+                        <p class="lead">This table shows your spendings</p>
+                        <hr class="my-4">
+                        <div class="pos-f-t">
+                            <div class="collapse" id="navbarToggleAddSpending">
+                                <div class="bg-dark p-4">
+                                    <h5 class="text-white h4">New Spending Data</h5>
+                                    <form action ="#" method="POST">
+                                        <div class="form-row">
+                                            <input type="number" step="0.01" min=0 class="form-control" name="fin_sp_am" placeholder="Spending Amount" required>
+                                        </div>
+                                        <div class="form-row">
+                                            <input type="datetime-local" name="fin_sp_tmst" required>
+                                        </div>
+                                        <div class="form-row">
+                                            <input type="text" class="form-control" name="fin_sp_usr_note" placeholder="Notes">
+                                        </div>
+                                        <div class="form-row">
+                                            <button type="submit" class="btn btn-secondary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <nav class="navbar navbar-dark bg-dark">
+                              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleAddSpending" aria-controls="navbarToggleAddSpending" aria-expanded="false" aria-label="Toggle navigation">
+                                <p style="color:white;">Add Spending</p>
+                              </button>
+                            </nav>
+                        </div>
+                        <hr class="my-4">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for dic in j_spendings %}
+                                        <tr>
+                                            <th scope="row">{{loop.index}}</th>
+                                            {% for i in dic %}
+                                                {% if loop.index == 1 %}
+                                                    <td>
+                                                        <form action="#" method="POST">
+                                                            <button button type="submit" class="btn btn-secondary" name = "fin_id_sp_del" value= {{ dic[i] }}>Delete</button>
+                                                        </form>
+                                                    </td>
+                                                {% else %}
+                                                    <td>{{dic[i]}}</td>
+                                                {% endif%}
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="jumbotron">
+                        <h1 class="display-4">Spendings Chart</h1>
+                        <p class="lead">Chart showing your income to spending ratio</p>
+                        <hr class="my-4">
+                        <embed type="image/svg+xml" src= {{ chartsp2inc|safe }} />
+                    </div>
+                </div>
+            </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
