@@ -40,6 +40,54 @@ def insert_user(in_username):
         return id_user
 
 
+def get_user_id_pwd(in_username):
+    q_select_user = "select id_user, hashed_pwd from users where username=(%s)"
+    l_user_data = []
+    d_resp = {}
+    db_con = None
+    l_user_js_tags = ["id_user", "hashed_pwd"]
+    try:
+        db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
+        db_cur = db_con.cursor()
+        db_cur.execute(q_select_user, (in_username,))
+        l_user_data = db_cur.fetchall()
+        # print("selected user id: " + str(id_user))
+        db_cur.close()
+        if len(l_user_data) > 0:
+            l_user_data = [l_user_data[0][0], l_user_data[0][1]]
+            d_resp = dict(zip(l_user_js_tags, l_user_data))
+        else:
+            d_resp = {
+                "id_user": -1
+            }
+    except psycopg2.DatabaseError as err:
+        print(err)
+    finally:
+        if db_con is not None:
+            db_con.close()
+        return d_resp
+        
+
+def insert_user_w_pwd(in_username, in_hash_pwd):
+    q_insert_usr = "insert into users (username, hashed_pwd) values (%s,%s) returning id_user;"
+    id_user = -1
+    db_con = None
+    try:
+        db_con = psycopg2.connect(host="localhost", database="SpendingTracker_DB", user="st_server_db_user", password="user123")
+        db_cur = db_con.cursor()
+        db_cur.execute(q_insert_usr, (in_username, in_hash_pwd,))
+        id_user = db_cur.fetchone()[0]
+        db_con.commit()
+        print("Added new user with id= " + str(id_user))
+        db_cur.close()
+    except psycopg2.DatabaseError as err:
+        print(err)
+    finally:
+        if db_con is not None:
+            db_con.close()
+        return id_user
+
+
 def insert_income(in_id_user, in_inc_amount, in_inc_tmstmp, in_income_note):
     q_insert_inc = "insert into user_incomes (id_user, income_amount, income_timestamp, income_user_note) values (%s,%s,%s,%s) returning id_income;"
     id_income = -1
@@ -194,10 +242,10 @@ def delete_spendings(in_sp_list):
 
 
 def get_user_spendings(in_id_user, in_start_date, in_end_date):
-    q_sel_sp = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s order by spending_timestamp asc;"
-    q_sel_sp_sd = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s order by spending_timestamp asc;"
-    q_sel_sp_ed = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp <= %s order by spending_timestamp asc;"
-    q_sel_sp_md = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s and spending_timestamp <= %s order by spending_timestamp asc;"
+    q_sel_sp = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s order by spending_timestamp desc;"
+    q_sel_sp_sd = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s order by spending_timestamp desc;"
+    q_sel_sp_ed = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp <= %s order by spending_timestamp desc;"
+    q_sel_sp_md = "select id_spending, spending_amount, spending_timestamp, spending_user_note from user_spendings where id_user = %s and spending_timestamp >= %s and spending_timestamp <= %s order by spending_timestamp desc;"
 
     spendings_list = []
     l_resp = []
@@ -223,7 +271,7 @@ def get_user_spendings(in_id_user, in_start_date, in_end_date):
             d_tmp = dict(zip(l_sp_js_tags, l_tmp))
             l_resp.append(d_tmp)
 
-        print("Selected " + str(db_cur.rowcount) + " spendings where id_user= " + str(in_id_user) + " between dates: " + str(in_start_date) + " and " + str(in_end_date))
+        # print("Selected " + str(db_cur.rowcount) + " spendings where id_user= " + str(in_id_user) + " between dates: " + str(in_start_date) + " and " + str(in_end_date))
         db_cur.close()
     except psycopg2.DatabaseError as err:
         print(err)

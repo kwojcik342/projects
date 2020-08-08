@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import db_opers as dbo
 import pygal as pg
+import bcrypt
 from datetime import date, datetime
 
 
@@ -11,20 +12,44 @@ app.secret_key = "test1"
 @app.route("/", methods=["POST", "GET"])
 def home():
     if request.method == "POST":
-        usern = request.values["inputLogin"]
-        id_usr = dbo.get_user_id(usern)
-        if id_usr > 0:
-            session["id_user"] = id_usr
-        
-        if id_usr < 0:
-            return redirect(url_for("home"))
+        if "inputLogin" in request.values and "inputPassword" in request.values:
+            usern = request.values["inputLogin"]
+            # id_usr = dbo.get_user_id(usern)
+            db_resp = dbo.get_user_id_pwd(usern)
+            id_usr = int(db_resp["id_user"])
+            if id_usr > 0:
+                is_pwd_valid = bcrypt.checkpw(request.values["inputPassword"].encode('utf-8'), db_resp["hashed_pwd"].encode('utf-8'))
+                if is_pwd_valid:
+                    session["id_user"] = id_usr
+                    return redirect(url_for("user_page"))
+                else:
+                    return redirect(url_for("home"))
+            else:
+                return redirect(url_for("home"))
         else:
-            return redirect(url_for("user_page"))
+            return redirect(url_for("home"))
     else:
         if "id_user" in session:
             return redirect(url_for("user_page"))
         else:
             return render_template("index.html")
+
+
+@app.route("/create_account", methods=["POST", "GET"])
+def create_account():
+    if request.method == "GET":
+        return render_template("create_account.html")
+    elif request.method == "POST":
+        if "inputNewLogin" in request.values and "inputNewPassword" in request.values:
+            pwd_hash = bcrypt.hashpw(request.values["inputNewPassword"].encode('utf-8'), bcrypt.gensalt())
+            password_hashed = pwd_hash.decode('utf-8')
+            id_user = dbo.insert_user_w_pwd(request.values["inputNewLogin"], password_hashed)
+            if id_user > 0:
+                return redirect(url_for("home"))
+            else:
+                return redirect(url_for("create_account"))
+        else:
+            return redirect(url_for("create_account"))
 
 
 @app.route("/user_page", methods=["POST", "GET"])
@@ -81,7 +106,7 @@ def user_page():
             if month == 13:
                 month = 1
             inc_amount = inc["inc_amount"] 
-            d_sp = dbo.get_user_spendings(3, start_date, end_date)
+            d_sp = dbo.get_user_spendings(id_user, start_date, end_date)
             for sp in d_sp:
                 sp_sum += sp["sp_amount"]
 
@@ -124,7 +149,10 @@ def user_page():
             if "sp_st_date" in session:
                 sp_st_date = session["sp_st_date"]
             else:
-                sp_st_date = usr_inc[0]["inc_tmst"]
+                if len(usr_inc) > 0:
+                    sp_st_date = usr_inc[0]["inc_tmst"]
+                else:
+                    sp_st_date = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
 
             if "sp_end_date" in session:
                 sp_end_date = session["sp_end_date"]
