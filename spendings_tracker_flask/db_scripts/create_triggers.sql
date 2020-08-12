@@ -111,15 +111,15 @@ begin
 	if tg_op = 'UPDATE' then
 		_oper_type = 'U';
 		
-		insert into users_hist(id_user, username, created_date, hist_operation, hist_timestamp)
-		values (old.id_user, old.username, old.created_date, _oper_type, now());
+		insert into users_hist(id_user, username, created_date, hashed_pwd, hist_operation, hist_timestamp)
+		values (old.id_user, old.username, old.created_date, old.hashed_pwd, _oper_type, now());
 	
 		return new;
 	elsif tg_op = 'DELETE' then
 		_oper_type = 'D';
 		
-		insert into users_hist(id_user, username, created_date, hist_operation, hist_timestamp)
-		values (old.id_user, old.username, old.created_date, _oper_type, now());
+		insert into users_hist(id_user, username, created_date, hashed_pwd, hist_operation, hist_timestamp)
+		values (old.id_user, old.username, old.created_date, old.hashed_pwd, _oper_type, now());
 
 		return old;
 	end if;

@@ -1,6 +1,7 @@
 create table if not exists users(
 	 id_user serial primary key
 	,username varchar(50) UNIQUE NOT NULL
+	,hashed_pwd varchar
 	,created_date timestamp
 );
 
@@ -8,6 +9,7 @@ create table if not exists users_hist(
 	 id_user_hist serial primary key
 	,id_user int
 	,username varchar(50)
+	,hashed_pwd varchar
 	,created_date date
 	,hist_operation varchar(1)
 	,hist_timestamp timestamp
